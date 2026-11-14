@@ -4,7 +4,7 @@
  * Everything except createClient/generate is pure, so it can be unit-tested
  * without an API key.
  */
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { GoogleGenAI } from "@google/genai";
 
@@ -41,6 +41,7 @@ export class NanoBananaError extends Error {
 }
 export class MissingApiKeyError extends NanoBananaError {}
 export class UnsupportedImageError extends NanoBananaError {}
+export class ImageNotFoundError extends NanoBananaError {}
 export class EmptyResponseError extends NanoBananaError {}
 
 /**
@@ -90,6 +91,18 @@ export function guessMimeType(filePath) {
     );
   }
   return mime;
+}
+
+/**
+ * Fail fast, before any API call, if an input image is missing or has an unsupported type.
+ * @param {string[]} imagePaths
+ */
+export async function checkImagePaths(imagePaths) {
+  for (const filePath of imagePaths) {
+    guessMimeType(filePath);
+    const info = await stat(filePath).catch(() => undefined);
+    if (!info?.isFile()) throw new ImageNotFoundError(`Input image not found: ${filePath}`);
+  }
 }
 
 /** @param {string | undefined} mimeType */
