@@ -48,6 +48,10 @@ class UnsupportedImageError(NanoBananaError):
     """Raised when an input file is not an image format the API accepts."""
 
 
+class ImageNotFoundError(NanoBananaError):
+    """Raised when an input image path does not point to a readable file."""
+
+
 class EmptyResponseError(NanoBananaError):
     """Raised when the model returns no content (for example, a blocked prompt)."""
 
@@ -95,6 +99,14 @@ def guess_mime_type(path: str | os.PathLike[str]) -> str:
             f"Unsupported image type {suffix or '(none)'!r} for {path}; "
             f"expected one of {supported}."
         ) from None
+
+
+def check_image_paths(paths: Iterable[str | os.PathLike[str]]) -> None:
+    """Fail fast, before any API call, if an input image is missing or has an unsupported type."""
+    for path in paths:
+        guess_mime_type(path)
+        if not Path(path).is_file():
+            raise ImageNotFoundError(f"Input image not found: {path}")
 
 
 def extension_for_mime(mime_type: str | None) -> str:
