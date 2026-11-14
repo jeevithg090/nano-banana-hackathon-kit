@@ -1,0 +1,29 @@
+{
+  "name": "nano-banana-kit-js",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Runnable JavaScript examples for Gemini's image model (Nano Banana).",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.9"
+  },
+  "bin": {
+    "nano-banana": "./src/cli.js"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=../../.env src/cli.js",
+    "test": "node --test",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@google/genai": "^3.3.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.1"
+  }
+}
