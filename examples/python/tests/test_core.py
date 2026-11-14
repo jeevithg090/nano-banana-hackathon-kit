@@ -151,3 +151,23 @@ def test_generate_calls_api_with_model_and_modalities(tmp_path: Path):
     assert kwargs["contents"][0].text == "a banana"
     assert kwargs["config"].response_modalities == ["TEXT", "IMAGE"]
     assert result.image_paths == (tmp_path / "banana.png",)
+
+
+def test_check_image_paths(tmp_path):
+    from nano_banana import ImageNotFoundError, UnsupportedImageError, check_image_paths
+
+    good = tmp_path / "a.png"
+    good.write_bytes(b"x")
+    check_image_paths([good])
+    with pytest.raises(ImageNotFoundError):
+        check_image_paths([tmp_path / "missing.jpg"])
+    with pytest.raises(UnsupportedImageError):
+        check_image_paths([tmp_path / "notes.txt"])
+
+
+def test_package_version_matches_metadata():
+    from importlib.metadata import version
+
+    import nano_banana
+
+    assert version("nano-banana-kit") == nano_banana.__version__

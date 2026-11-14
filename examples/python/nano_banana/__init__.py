@@ -1,13 +1,17 @@
 """Helpers for building with Gemini's image model (Nano Banana)."""
 
+__version__ = "0.1.0"
+
 from .core import (
     DEFAULT_MODEL,
     EmptyResponseError,
     GenerationResult,
+    ImageNotFoundError,
     MissingApiKeyError,
     NanoBananaError,
     UnsupportedImageError,
     build_contents,
+    check_image_paths,
     create_client,
     extension_for_mime,
     extract_text,
@@ -25,10 +29,13 @@ __all__ = [
     "DEFAULT_MODEL",
     "EmptyResponseError",
     "GenerationResult",
+    "ImageNotFoundError",
     "MissingApiKeyError",
     "NanoBananaError",
     "UnsupportedImageError",
+    "__version__",
     "build_contents",
+    "check_image_paths",
     "create_client",
     "extension_for_mime",
     "extract_text",

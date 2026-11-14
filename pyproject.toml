@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nano-banana-kit"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Starter helpers and CLI for Gemini's image model (Nano Banana)."
 readme = "README.md"
 license = "Apache-2.0"
@@ -20,6 +20,9 @@ nano-banana = "nano_banana.cli:main"
 [tool.setuptools]
 package-dir = { "" = "examples/python" }
 packages = ["nano_banana"]
+
+[tool.setuptools.dynamic]
+version = { attr = "nano_banana.__version__" }
 
 [tool.pytest.ini_options]
 testpaths = ["examples/python/tests"]
