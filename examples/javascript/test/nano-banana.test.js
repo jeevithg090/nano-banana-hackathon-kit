@@ -4,6 +4,8 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, it } from "node:test";
 import {
+  ImageNotFoundError,
+  checkImagePaths,
   DEFAULT_MODEL,
   EmptyResponseError,
   MissingApiKeyError,
@@ -137,5 +139,17 @@ describe("generate", () => {
     assert.deepEqual(request.contents, [{ text: "a banana" }]);
     assert.equal(result.text, "A banana");
     assert.deepEqual(result.imagePaths, [path.join(dir, "b.png")]);
+  });
+});
+
+describe("checkImagePaths", () => {
+  it("accepts existing images and rejects missing or unsupported files", async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), "nb-check-"));
+    const good = path.join(dir, "a.png");
+    await writeFile(good, "x");
+    await checkImagePaths([good]);
+    await assert.rejects(checkImagePaths([path.join(dir, "missing.jpg")]), ImageNotFoundError);
+    await assert.rejects(checkImagePaths([dir]), UnsupportedImageError);
+    await assert.rejects(checkImagePaths([path.join(dir, "folder.png")]), ImageNotFoundError);
   });
 });
